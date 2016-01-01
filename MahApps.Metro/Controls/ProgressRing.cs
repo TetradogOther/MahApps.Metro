@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace MahApps.Metro.Controls
 {
@@ -26,7 +27,7 @@ namespace MahApps.Metro.Controls
         public static readonly DependencyProperty EllipseOffsetProperty = DependencyProperty.Register("EllipseOffset", typeof(Thickness), typeof(ProgressRing), new PropertyMetadata(default(Thickness)));
 
         private List<Action> _deferredActions = new List<Action>();
-
+        private Brush colorBackGround;
         static ProgressRing()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ProgressRing), new FrameworkPropertyMetadata(typeof(ProgressRing)));
@@ -88,7 +89,36 @@ namespace MahApps.Metro.Controls
             get { return (bool)GetValue(IsLargeProperty); }
             set { SetValue(IsLargeProperty, value); }
         }
+        public void Hide()
+        {
+            Action act = () =>
+            {
+                //no funciona bien...
+                //cuando lo haga bien hago un Push :)
+                //lo oculta y guarda el color :)
+                //si ya esta oculto no hace nada
+                if (!this.Foreground.Equals(Brushes.Transparent))
+                {
+                colorBackGround = this.Foreground;
+                this.Foreground = Brushes.Transparent;
+                }
+            };
+            Dispatcher.BeginInvoke(act);
+        }
+        public void Show()
+        {
+            Action act = () =>
+            {
 
+                //lo pone visible poniendo el color que tenia :D
+                //si esta invisible pone el color sino no
+                if (this.Foreground.Equals(Brushes.Transparent))
+                {
+                    this.Foreground = colorBackGround;
+                }
+            };
+            Dispatcher.BeginInvoke(act);
+        }
         private static void BindableWidthCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var ring = dependencyObject as ProgressRing;
